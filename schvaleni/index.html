@@ -79,7 +79,7 @@ function card(d){var r=rec(d.k),s=r.stav;
   '<textarea class="fp" data-k="'+d.k+'" data-i="'+i+'" placeholder="Poznámka k fotce '+(i+1)+' – co jinak?">'+esc(f.pozn)+'</textarea></div></div>';}).join('');
  var sel=r.f.map(function(f){return f.s;});
  var gal=d.fotky.map(function(n,j){return '<div class="g'+(sel.indexOf(n)>=0?' sel':'')+'" data-k="'+d.k+'" data-j="'+j+'"><img loading="lazy" src="img/'+d.k+'/'+n+'"><span>'+(j+1)+'</span></div>';}).join('');
- return '<div class="k'+(s?' st-'+s:'')+'"><div class="top"><span class="t">'+esc(d.t)+'</span><span class="mut">'+esc(d.ob)+' · '+kc(d.cena)+' · '+d.skup+'</span><a href="'+esc(d.url)+'" target="_blank" rel="noopener">inzerát ↗</a></div>'+fb+
+ return '<div class="k'+(s?' st-'+s:'')+'">'+(d.minule&&d.minule.trim()?'<div class="mut" style="margin:0 0 6px">Minulá připomínka: „'+esc(d.minule.trim())+'“ → opraveno</div>':'')+'<div class="top"><span class="t">'+esc(d.t)+'</span><span class="mut">'+esc(d.ob)+' · '+kc(d.cena)+' · '+d.skup+'</span><a href="'+esc(d.url)+'" target="_blank" rel="noopener">inzerát ↗</a></div>'+fb+
   '<details><summary>Všechny fotky z inzerátu ('+d.fotky.length+') – klik = zvětšit a vybrat jinou</summary><div class="gal">'+gal+'</div></details>'+
   '<details><summary>Text v nabídce (proč se neprodává / pro koho)</summary><div class="info"><b>Proč:</b> '+esc(d.proc)+'<br><b>Pro koho:</b> '+esc(d.pro)+'</div></details>'+
   '<div class="row" style="margin-top:10px"><button class="btn ok cel'+(s==='ok'?' on':'')+'" data-k="'+d.k+'" data-s="ok">✅ Celé OK</button><button class="btn zmenit cel'+(s==='zmenit'?' on':'')+'" data-k="'+d.k+'" data-s="zmenit">✏️ Předělat</button><button class="btn ne cel'+(s==='ne'?' on':'')+'" data-k="'+d.k+'" data-s="ne">❌ Vynechat</button>'+
