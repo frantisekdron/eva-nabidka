@@ -32,12 +32,26 @@ details{margin-top:6px}summary{cursor:pointer;color:var(--red);font-weight:600;f
 #lb img{max-width:100%;max-height:80vh;object-fit:contain}#lb .bar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center}
 #lb .nav{position:absolute;top:50%;font-size:40px;color:#fff;cursor:pointer;padding:10px;user-select:none}#lb .x{position:absolute;top:8px;right:16px;font-size:30px;color:#fff;cursor:pointer}
 @media (max-width:640px){header{position:static}.pair{grid-template-columns:1fr}}
+.pdfb{background:var(--card);border:2px solid var(--red);border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.pdfb h2{margin:0 0 4px;color:var(--red);font-size:19px}.pg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+.pg2 img{width:100%;border:1px solid var(--line);border-radius:6px;cursor:zoom-in;box-shadow:0 2px 10px #0002}
+.pc{display:grid;gap:6px;margin-top:8px}.pc label{font-size:13px;font-weight:600}.pc textarea{width:100%}
+@media (max-width:640px){.pg2{grid-template-columns:1fr}}
 </style></head><body>
 <header><h1>Schválení vizualizací · nabídky dopisem</h1>
 <span class="chip on" data-f="vse">Vše <b id="c-vse"></b></span><span class="chip" data-f="ceka">Čeká <b id="c-ceka"></b></span>
 <span class="chip" data-f="ok">✅ OK <b id="c-ok"></b></span><span class="chip" data-f="zmenit">✏️ Předělat <b id="c-zmenit"></b></span><span class="chip" data-f="ne">❌ Vynechat <b id="c-ne"></b></span>
 <span class="sync" id="sync">načítám…</span></header>
-<main><div class="navod"><b>Evo, u každé nemovitosti prosím zkontroluj 2 fotky pro „před / po“ v dopisu:</b><ol>
+<main><div class="pdfb" id="pdfb"><h2>① Nejdřív schval vzhled dopisu (PDF, 2× A4)</h2>
+<div class="mut">Takhle bude vypadat každá nabídka: adresa majitele v okénku obálky, logo RE/MAX, Eva i Chantal, 2× před/po a na 2. straně text, cena a kontakt jen na Evu. Adresa v ukázce je smyšlená, vpravo se doplní vizualizace. <a href="pdf_nahled/ukazka.pdf" target="_blank">Otevřít PDF ↗</a></div>
+<div class="pg2"><div><b>Strana 1</b><img src="pdf_nahled/str-1.png" data-z="pdf_nahled/str-1.png"></div><div><b>Strana 2</b><img src="pdf_nahled/str-2.png" data-z="pdf_nahled/str-2.png"></div></div>
+<div class="pc"><label>Strana 1 – hlavička, logo, Eva + Chantal, adresa v okénku</label><textarea class="pdfc" data-f="s1_hlavicka"></textarea>
+<label>Strana 1 – nadpis, úvodní věta, fotky před/po a popisek</label><textarea class="pdfc" data-f="s1_fotky"></textarea>
+<label>Strana 2 – „Proč se neprodalo“, „Pro koho“, „Jak bychom prodej vedly“</label><textarea class="pdfc" data-f="s2_texty"></textarea>
+<label>Strana 2 – co je v ceně provize, cena, kontakt a patička</label><textarea class="pdfc" data-f="s2_kontakt"></textarea>
+<label>Celkově / cokoli dalšího</label><textarea class="pdfc" data-f="celkem"></textarea></div>
+<div class="row" style="margin-top:10px"><button class="btn ok pdfs" data-s="ok">✅ Vzhled PDF schvaluji</button><button class="btn zmenit pdfs" data-s="zmenit">✏️ Upravit podle poznámek</button></div></div>
+<h2 style="font-size:18px;color:var(--blue);margin:6px 0 10px">② Vizualizace u jednotlivých nemovitostí</h2><div class="navod"><b>Evo, u každé nemovitosti prosím zkontroluj 2 fotky pro „před / po“ v dopisu:</b><ol>
 <li>U každé fotky: <b>✅ OK</b>, nebo <b>✏️ Předělat</b> a do poznámky napiš, co chceš jinak (styl, světlejší, bez nábytku…).</li>
 <li>Chceš <b>jinou fotku</b>? Rozbal „Všechny fotky z inzerátu“, klikni na fotku (otevře se velká, šipkami listuješ) a dej „Použít místo fotky 1 / 2“.</li>
 <li>Celou nemovitost můžeš <b>❌ Vynechat</b> (nehodí se, prodáno, realitka…).</li></ol>
@@ -100,6 +114,12 @@ document.addEventListener('change',function(e){if(e.target.classList.contains('a
 document.addEventListener('input',function(e){var t=e.target;if(t.classList.contains('fp')){var r=rec(t.dataset.k);r.f[+t.dataset.i].pozn=t.value;r.ts=Date.now();push();}
  if(t.classList.contains('cp')){var r=rec(t.dataset.k);r.pozn=t.value;r.ts=Date.now();push();}});
 document.querySelectorAll('.chip').forEach(function(c){c.addEventListener('click',function(){filt=c.dataset.f;document.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x===c);});render();});});
+function pdfR(){var k='PDF|'+KDO;if(!S[k])S[k]={stav:'',ts:0,kdo:KDO};return S[k];}
+function pdfDraw(){var r=pdfR();document.querySelectorAll('.pdfc').forEach(function(e){if(document.activeElement!==e)e.value=r[e.dataset.f]||'';});
+ document.querySelectorAll('.pdfs').forEach(function(b){b.classList.toggle('on',r.stav===b.dataset.s);});}
+document.addEventListener('click',function(e){var b=e.target.closest('.pdfs');if(b){var r=pdfR();r.stav=r.stav===b.dataset.s?'':b.dataset.s;r.ts=Date.now();push();pdfDraw();}});
+document.addEventListener('input',function(e){if(e.target.classList.contains('pdfc')){var r=pdfR();r[e.target.dataset.f]=e.target.value;r.ts=Date.now();push();}});
+var _render=render;render=function(){_render();pdfDraw();};
 fetch(SYNC+'?token='+TOKEN+'&ns='+NS+'&_='+Date.now()).then(function(r){return r.json();}).then(function(d){if(d&&d.ok){rev=d.rev||0;merge(d.state||{});}document.getElementById('sync').textContent='☁︎ synchronizováno';render();})
  .catch(function(){document.getElementById('sync').textContent='⚠ offline';render();});
 render();
